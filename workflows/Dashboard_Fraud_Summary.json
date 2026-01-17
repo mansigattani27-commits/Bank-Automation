@@ -1,0 +1,93 @@
+{
+  "name": "Dashboard_Fraud_Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dashboard/fraud-summary",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77e3f547-5f6a-4a11-b4a1-12ddead80869",
+      "name": "Webhook",
+      "webhookId": "eb197cac-5129-4309-808d-a715354818d4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT risk_level, COUNT(*) AS count\nFROM test_data\nGROUP BY risk_level;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "16e48d59-7082-4b9c-a596-cc19811aed1f",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"fraud_summary\": $input.all().map(item => item.json)\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "da7096db-4d96-4195-a852-265ded370608",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e1c11784-103b-476a-ab19-ede8db98311f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "lh7Kyna7dA6K0ljS",
+  "tags": []
+}

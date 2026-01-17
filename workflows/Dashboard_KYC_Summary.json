@@ -1,0 +1,93 @@
+{
+  "name": "Dashboard_KYC_Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dashboard/kyc-summary",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fa6398d4-65da-46b4-8dd2-30acbee6ce77",
+      "name": "Webhook",
+      "webhookId": "11219163-0f01-41c4-a830-3f7c726ef159"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT kyc_status, COUNT(*) AS count\nFROM kyc_data\nGROUP BY kyc_status;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "67b37bc9-5e39-4e34-8491-f5bd932fef46",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"kyc_summary\": $input.all().map(item => item.json)\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "43683e3d-0ce4-46ef-85e1-d29ff8ad14f3",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a1d93dc2-9c2f-4eab-9be1-6af6ca64e4e0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "KzOC1qNqnsSN8xmP",
+  "tags": []
+}

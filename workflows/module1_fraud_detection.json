@@ -1,0 +1,717 @@
+{
+  "name": "module1_fraud_detection",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fraud-transaction",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -528,
+        -32
+      ],
+      "id": "59786943-0718-4d35-b4e8-6d6a58491d2d",
+      "name": "Webhook",
+      "webhookId": "50a63c57-3846-45d1-8d88-5b36d599e934"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61fc7ffa-6bea-4435-b7aa-56754bf3f128",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d3c19f26-561e-4b16-8fca-3d8c93a86e75",
+              "name": "amount",
+              "value": "={{ $json.body.amount }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        -48
+      ],
+      "id": "53ac4ccd-e2e7-4bd3-ab99-c859b1bdb541",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "79803790-1f8f-49b4-9494-b910f1b74ab0",
+              "name": "status",
+              "value": "Unusual Transaction Pattern",
+              "type": "string"
+            },
+            {
+              "id": "9a6b3893-efa5-41cb-9e1e-599db20fcc5c",
+              "name": "risk_level",
+              "value": "High",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        -176
+      ],
+      "id": "149fc54c-5f3e-4568-aca0-01cbc72563f0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d2606688-ecef-496c-9892-6b28e2918d51",
+              "name": "status",
+              "value": "Slightly Unusual Transaction",
+              "type": "string"
+            },
+            {
+              "id": "1e5b4b19-8947-4288-b6a4-fc88bf7845cd",
+              "name": "risk_level",
+              "value": "medium",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "3d9e0d9c-7daf-46f3-9bef-9fa370a0ce95",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "test_data",
+          "mode": "list",
+          "cachedResultName": "test_data"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1392,
+        -96
+      ],
+      "id": "60b6fa44-3c5e-46a5-b39c-1c29efc2cca8",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "Fraud Detection"
+            },
+            {
+              "column": "action",
+              "value": "Transaction processed"
+            },
+            {
+              "column": "status",
+              "value": "SUCCESS"
+            },
+            {
+              "column": "message",
+              "value": "Transaction evaluated and stored"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1616,
+        -96
+      ],
+      "id": "aee4444f-d08e-47d8-a4a3-64d6da209305",
+      "name": "Insert rows in a table1",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"risk_level\": \"{{$json.risk_level}}\",\n  \"message\": \"Transaction processed\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1824,
+        -96
+      ],
+      "id": "40d66942-cb38-4547-9c7e-5b8ff85ee4ec",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "53bf5de1-48da-4284-8bc3-c9ee4c7cf96e",
+              "leftValue": "={{ $json.body.name !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f9be2994-86d2-420e-bc64-890fbc3fa388",
+              "leftValue": "={{ $json.body.amount !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -352,
+        -32
+      ],
+      "id": "245f0b6f-e313-42b8-9821-9cba87bd35a2",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "=Fraud Detection"
+            },
+            {
+              "column": "action",
+              "value": "Validation failed"
+            },
+            {
+              "column": "status",
+              "value": "FAILED"
+            },
+            {
+              "column": "message",
+              "value": "Missing or invalid input"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -160,
+        144
+      ],
+      "id": "c69e17d7-0ff2-47ed-982f-615a2aba9c6b",
+      "name": "Insert rows in a table2",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"error\",\n  \"message\": \"Invalid or missing transaction data\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        48,
+        144
+      ],
+      "id": "28facbce-eaf7-4673-a596-db0bfdf1cf79",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  AVG(amount) AS avg_amount,\n  COUNT(*) AS txn_count\nFROM test_data\nWHERE name = :name;\n",
+        "options": {
+          "queryReplacement": "{{$json.body.name}}"
+        }
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        80,
+        -48
+      ],
+      "id": "c9b5d0d4-eefa-479f-aa42-3c515ddb3fd3",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "33c3bf80-b0bc-48fc-9a67-4eec2b361b18",
+              "leftValue": "={{$json.txn_count < 3}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        240,
+        -48
+      ],
+      "id": "9fddc172-8c9e-4f36-b9d2-2110b3455483",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35e4b2f5-4b7b-4477-a250-3a9947fd1393",
+              "name": "risk_level",
+              "value": "Low",
+              "type": "string"
+            },
+            {
+              "id": "24870089-ff30-4dc8-b51c-1196ea3447d2",
+              "name": "status",
+              "value": "New Customer – Low Confidence",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        -352
+      ],
+      "id": "2a8322a1-31df-438b-8b3c-4231b6ce53cc",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5435e8ab-2aaa-43d8-b883-201dfd7d76a0",
+              "name": "deviation_ratio",
+              "value": "={{$json.body.amount / $json.avg_amount}}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        48
+      ],
+      "id": "bc82c739-cf48-4396-9a77-ed7d1921f0bb",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e933b458-3f74-4f60-b6b5-818439788b5d",
+              "leftValue": "={{$json.deviation_ratio > 2}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        48
+      ],
+      "id": "8f58c47b-84e2-41c2-8e07-b42c5a5e7521",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6d48b764-2fc2-491b-804b-e78064c721b6",
+              "leftValue": "={{$json.deviation_ratio > 1.2}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        144
+      ],
+      "id": "5bf171f2-2213-4490-a064-46b0833bac3a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d2606688-ecef-496c-9892-6b28e2918d51",
+              "name": "status",
+              "value": "Normal Transaction Pattern",
+              "type": "string"
+            },
+            {
+              "id": "1e5b4b19-8947-4288-b6a4-fc88bf7845cd",
+              "name": "risk_level",
+              "value": "low",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        192
+      ],
+      "id": "f4d1ab97-f3ae-4476-a0fa-bfd340ba40e0",
+      "name": "Edit Fields5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f52ed695-aa4e-4e28-9089-14390f1f3d3d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "TB9023kwqWZD3LWJ",
+  "tags": []
+}

@@ -1,0 +1,643 @@
+{
+  "name": "Module3_Customer_Support",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "support-ticket",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0b32abb9-28de-4368-82fb-61ed52ae63ab",
+      "name": "Webhook",
+      "webhookId": "60f07fdf-261b-437e-96a3-52cc850dfb9a"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e345caaf-ff27-40ee-a42c-d3b030c9d054",
+              "name": "customer_name",
+              "value": "={{ $json.body.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "72d35b68-f5ee-4642-b1e5-460d4025d052",
+              "name": "issue_type",
+              "value": "={{ $json.body.issue_type }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "736292e7-a63c-439e-954a-9a4a9f295496",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6aada262-6826-4f00-8667-0f97dfeeac47",
+              "leftValue": "={{ $('Webhook').item.json.body.issue_type\n     .toLowerCase()\n     .includes('card') }}\n\n",
+              "rightValue": "card",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d2556b4b-eaa6-43f8-a43b-20291991747d",
+              "leftValue": "={{ $('Webhook').item.json.body.issue_type\n     .toLowerCase()\n     .includes('loan') }}\n",
+              "rightValue": "loan",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5c6fc62b-4aff-4bae-92bd-d6ed657f1a8d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab4dea13-10ab-4ac7-a2d8-59b6368b8ca1",
+              "name": "department",
+              "value": "Card Support",
+              "type": "string"
+            },
+            {
+              "id": "4139cce6-0529-48f2-a234-cd8139b4a286",
+              "name": "ticket_status",
+              "value": "Open",
+              "type": "string"
+            },
+            {
+              "id": "3e8a19bd-ad52-4090-a275-39d3885cf3ba",
+              "name": "priority",
+              "value": "High",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -160
+      ],
+      "id": "e4e2d7e0-5f48-4e02-b9e1-453f9a03cd94",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e06d3f9-a4ec-4083-a662-4740109834b0",
+              "name": "department",
+              "value": "General Support",
+              "type": "string"
+            },
+            {
+              "id": "40422ed3-ee55-45fd-8e3d-47cd5658d295",
+              "name": "ticket_status",
+              "value": "Open",
+              "type": "string"
+            },
+            {
+              "id": "40b1f80a-5e45-47eb-8dbf-d48ea8672d5f",
+              "name": "priority",
+              "value": "Low",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        112
+      ],
+      "id": "cd2083b1-2e00-4167-a2aa-69b9ce0df259",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eaf26362-f045-4da7-bebb-afb58f6eb45b",
+              "name": "department ",
+              "value": "Loan Department",
+              "type": "string"
+            },
+            {
+              "id": "5b35a972-3b48-403f-bb28-57fc088ef66f",
+              "name": "ticket_status",
+              "value": "Open",
+              "type": "string"
+            },
+            {
+              "id": "e22f6c30-a7aa-44bd-b409-dfeab8fdcd1b",
+              "name": "priority",
+              "value": "Medium",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -16
+      ],
+      "id": "159a1033-fb8f-499d-8112-5b9bb890c7a2",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2aa232c3-4bdb-4ae0-8cc8-a2743f1bb181",
+              "name": "customer_name",
+              "value": "={{ $('Webhook').item.json.body.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9fdb4901-a62b-42dd-82e1-c35307122720",
+              "name": "issue_type",
+              "value": "={{ $('Webhook').item.json.body.issue_type }}",
+              "type": "string"
+            },
+            {
+              "id": "517c148b-294f-4fbe-837e-52f77d9a7987",
+              "name": "department",
+              "value": "={{ $json.department }}",
+              "type": "string"
+            },
+            {
+              "id": "bd264aaa-786d-44b8-b377-fb64fda3ebea",
+              "name": "ticket_status",
+              "value": "={{$json.ticket_status}}",
+              "type": "string"
+            },
+            {
+              "id": "2e5cb307-6460-45d1-926a-c584a4a51507",
+              "name": "priority",
+              "value": "={{$json.priority}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        0
+      ],
+      "id": "9efb32cd-8e11-4862-91bb-5808293e6850",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "support_tickets",
+          "mode": "list",
+          "cachedResultName": "support_tickets"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1584,
+        0
+      ],
+      "id": "ef36b599-cdda-4274-ba1d-9615f89d9023",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9c09d471-5d23-42f3-99f1-bad767388305",
+              "leftValue": "={{ $('Webhook').item.json.body.issue_type\n     .toLowerCase()\n     .includes('card') }}\n",
+              "rightValue": "card",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "3308e794-2063-4014-8898-73d6f7c9f827",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "Customer Support"
+            },
+            {
+              "column": "action",
+              "value": "Ticket created"
+            },
+            {
+              "column": "status",
+              "value": "SUCCESS"
+            },
+            {
+              "column": "message",
+              "value": "= Assigned to {{$json.department}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1760,
+        0
+      ],
+      "id": "a31b9d19-d2da-4b51-8265-3141b7c426d0",
+      "name": "Insert rows in a table1",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"department\": \"{{$json.department}}\",\n  \"ticket_status\": \"{{$json.ticket_status}}\",\n  \"message\": \"Support ticket created\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1968,
+        0
+      ],
+      "id": "6ad1a11c-4f9d-476b-a65c-db8eae07d842",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7d80c655-0218-4497-8d8e-60f238732dac",
+              "leftValue": "={{ $json.body.customer_name !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "13c44f7f-fe07-45fa-9988-2c8b4507fe74",
+              "leftValue": "={{ $json.body.issue_type !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "605b0112-a5d5-4ad9-b2a3-553e1bdb0520",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "Customer Support"
+            },
+            {
+              "column": "action",
+              "value": "Validation failed"
+            },
+            {
+              "column": "status",
+              "value": "FAILED"
+            },
+            {
+              "column": "message",
+              "value": "Missing or invalid input"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        432,
+        192
+      ],
+      "id": "e731d81f-ef1e-42be-8a97-b61025932a0b",
+      "name": "Insert rows in a table2",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"error\",\n  \"message\": \"Invalid support request\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        640,
+        192
+      ],
+      "id": "6e7d534a-6fab-4a0e-9443-159d1f99cb94",
+      "name": "Respond to Webhook1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4424f55-1751-4a9b-b202-2cb276ff3545",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "IeSmgqQ0CXUYKVbO",
+  "tags": []
+}

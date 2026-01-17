@@ -1,0 +1,712 @@
+{
+  "name": "module2_kyc_onboarding",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kyc-onboarding",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0d110745-d579-4347-8ecb-4296c1e5c5fe",
+      "name": "Webhook",
+      "webhookId": "54bec31c-d4da-4df8-811b-69229cd1cc60"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3605ef7f-563e-4662-9987-52a06394edea",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "b06db0c9-d65a-4284-97b3-e4f02d672bb6",
+              "name": "age",
+              "value": "={{ $json.body.age }}",
+              "type": "number"
+            },
+            {
+              "id": "faad14ff-4bea-451a-8d0b-1c5a26745c2a",
+              "name": "pan",
+              "value": "={{ $json.body.pan }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "b279fc85-0350-428a-89df-efbaf5501557",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b59a2a1d-49e3-44f2-a24a-95e630826ed7",
+              "leftValue": "={{$json.age}}",
+              "rightValue": 18,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        0
+      ],
+      "id": "7f9df481-e927-454c-8835-aff6b604ce76",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f49d604-5c2d-441b-bf79-0c71269ee3bd",
+              "name": "kyc_status",
+              "value": "Approved",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "4bce9384-a6a5-422c-a8fb-e1587f46b263",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03ca10b5-0966-4b5a-a165-d7709fb69a0f",
+              "name": "kyc_status",
+              "value": "Rejected (Underage)",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        96
+      ],
+      "id": "96e67edc-4f8f-4afa-81a0-129348cb1171",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "kyc_data",
+          "mode": "list",
+          "cachedResultName": "kyc_data"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1680,
+        128
+      ],
+      "id": "01480104-3854-4331-b29e-57fd59063c29",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "68b1f096-7683-42f5-891d-5e676ff6ce19",
+              "name": "name",
+              "value": "={{ $('Webhook').item.json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "96e41ca7-759e-4c36-ac61-1a00cc323ee5",
+              "name": "age",
+              "value": "={{ $('Webhook').item.json.body.age }}",
+              "type": "number"
+            },
+            {
+              "id": "67160c0d-7873-41db-a131-056111a2a384",
+              "name": "pan",
+              "value": "={{ $('Webhook').item.json.body.pan }}",
+              "type": "string"
+            },
+            {
+              "id": "b1eb3793-aecf-49f3-9243-8440e48b5a3c",
+              "name": "kyc_status",
+              "value": "={{ $json.kyc_status }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "f449fa35-d6a8-4725-b873-214f672770c2",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "KYC Onboarding"
+            },
+            {
+              "column": "action",
+              "value": "KYC processed"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.kyc_status }}"
+            },
+            {
+              "column": "message",
+              "value": "KYC verification completed"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1904,
+        128
+      ],
+      "id": "96a82575-e3c4-4bdc-945d-5f96d41ddfad",
+      "name": "Insert rows in a table1",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"kyc_status\": \"{{$json.kyc_status}}\",\n  \"message\": \"KYC processed successfully\"\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2112,
+        128
+      ],
+      "id": "c330934f-4e90-4657-bcc1-e39c94bb3b64",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "78695af5-6a05-4694-a7d3-7f0632f8fa28",
+              "leftValue": "={{ $json.body.name !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "7c965b04-f7de-41b1-a1cd-d8be3639e843",
+              "leftValue": "={{ $json.body.age !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "28f0ea41-9676-4d29-8408-c7a4514928e9",
+              "leftValue": "={{ $json.body.pan !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "028a286f-a32e-48db-bdf5-3d196e2be829",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "KYC Onboarding"
+            },
+            {
+              "column": "action",
+              "value": "Validation failed"
+            },
+            {
+              "column": "status",
+              "value": "FAILED"
+            },
+            {
+              "column": "message",
+              "value": "Missing or invalid input"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        400,
+        176
+      ],
+      "id": "30b06795-b849-4cad-bc63-4fd20ea11e12",
+      "name": "Insert rows in a table2",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"error\",\n  \"message\": \"Invalid KYC details\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        608,
+        176
+      ],
+      "id": "fece3b53-c599-40e4-aa42-edbe91dba55a",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS pan_count\nFROM kyc_data\nWHERE pan = :pan;\n",
+        "options": {
+          "queryReplacement": "={{$json.body.pan}}"
+        }
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1312,
+        0
+      ],
+      "id": "d5069821-2ff9-4bc3-9cee-fa0a94cce7b7",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "33cff663-b7af-4c9a-8ecd-5ddbb1433dd2",
+              "leftValue": "={{$json.pan_count > 0}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1520,
+        0
+      ],
+      "id": "03d32611-0cd6-47d3-87b1-98b96bf5962e",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3636e319-963e-4f0b-ac96-0142dd9e77d6",
+              "name": "kyc_status ",
+              "value": "Rejected (Duplicate pan)",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        -128
+      ],
+      "id": "2de6e3c6-d626-4c5a-8aec-60629ff98fa8",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "KYC Onboarding"
+            },
+            {
+              "column": "action",
+              "value": "KYC processed"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.kyc_status }}"
+            },
+            {
+              "column": "message",
+              "value": "Duplicate entry"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        1904,
+        -128
+      ],
+      "id": "748d13cf-738c-4afd-b1da-30d49046b056",
+      "name": "Insert rows in a table3",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"error\",\n  \"message\": \"Duplicate PAN detected\"\n}\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2112,
+        -128
+      ],
+      "id": "439d6de3-0d0b-4912-864e-4c0630a27aca",
+      "name": "Respond to Webhook2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e315fb4c-f18c-45f7-b624-5554a51fb3bf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "eReeI4E7ZV2IsN4E",
+  "tags": []
+}

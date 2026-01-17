@@ -1,0 +1,93 @@
+{
+  "name": "Dashboard_Support_Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "Dashboard_Support_Summary",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "673bad38-28eb-4780-8e2d-bb4dfd6d8c96",
+      "name": "Webhook",
+      "webhookId": "a79fde25-2758-4a06-b81e-8e764575c7e5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT department, COUNT(*) AS count\nFROM support_tickets\nGROUP BY department;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "03d6415d-3dc3-427a-8785-27035b94518e",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"support_summary\": $input.all().map(item => item.json)\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "081ee68c-36ba-40ed-9fd5-c507e5df2e9b",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2900fc58-4562-427c-bf12-a257956398e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "7XYPypjoRzwK4p0t",
+  "tags": []
+}
