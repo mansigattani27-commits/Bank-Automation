@@ -1,0 +1,87 @@
+{
+  "name": "Global_Error_Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3cae4545-46c5-4534-89c4-8ef739edcdbc",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "system_logs",
+          "mode": "list",
+          "cachedResultName": "system_logs"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "module_name",
+              "value": "={{$json.workflow.name}}"
+            },
+            {
+              "column": "action",
+              "value": "Workflow Failed"
+            },
+            {
+              "column": "status",
+              "value": "FAILED"
+            },
+            {
+              "column": "message",
+              "value": "={{$json.error.message}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "959e4aa0-3245-41dd-ac3c-2f675297f83c",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "bRDlxzaprjQjcLqQ",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "57d971cd-ca8f-4da6-877f-4c7a7eb9723c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b25c2305446510c7cbc1f6cdc86d8e50261131fe7af8dd49151a9cabccc4d9f1"
+  },
+  "id": "6su2ee8gI5Y0KEdy",
+  "tags": []
+}
